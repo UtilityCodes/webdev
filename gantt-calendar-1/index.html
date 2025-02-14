@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Reservation Gantt Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .gantt-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+        .room-column {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 10;
+            border-right: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            padding-top: 40px; /* Offset to prevent collision */
+        }
+        .gantt-table {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .gantt-header {
+            display: flex;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+        .gantt-header div {
+            width: 120px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+        .room-name {
+            width: 120px;
+            padding: 5px;
+            font-weight: bold;
+            background: #f8f8f8;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .gantt-days {
+            display: flex;
+            position: relative;
+            width: max-content;
+        }
+        .gantt-day {
+            width: 120px;
+            border-right: 1px solid #eee;
+            text-align: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .reservation {
+            position: absolute;
+            height: 30px;
+            background-color: lightblue;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="gantt-container">
+        <div class="room-column" id="roomNames"></div>
+        <div id="ganttWrapper">
+            <div id="ganttChart"></div>
+        </div>
+    </div>
+    <script>
+        const rooms = ["Room 101", "Room 102", "Room 103", "Room 104", "Room 105"];
+        const reservations = [
+            { customer: "John Doe", room: "Room 101", start: "2025-02-10", end: "2025-02-15" },
+            { customer: "Jane Smith", room: "Room 102", start: "2025-02-12", end: "2025-02-18" },
+            { customer: "Alice Brown", room: "Room 103", start: "2025-02-14", end: "2025-02-20" },
+            { customer: "Bob White", room: "Room 104", start: "2025-02-16", end: "2025-02-25" },
+        ];
+        
+        function formatDate(date) {
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-GB', options).replace(/ /g, ' ');
+        }
+        
+        function generateGantt() {
+            const gantt = document.getElementById("ganttChart");
+            const roomNames = document.getElementById("roomNames");
+            const days = 60;
+            let startDate = new Date("2025-02-01");
+            let content = '<div class="gantt-table">';
+            
+            // Header row
+            content += '<div class="gantt-header">';
+            for (let d = 0; d < days; d++) {
+                let date = new Date(startDate);
+                date.setDate(startDate.getDate() + d);
+                let formattedDate = formatDate(date);
+                content += `<div class="gantt-day">${formattedDate}</div>`;
+            }
+            content += '</div>';
+            
+            // Room rows
+            rooms.forEach(room => {
+                roomNames.innerHTML += `<div class="room-name">${room}</div>`;
+                content += `<div class="gantt-row" data-room="${room}"><div class="gantt-days">`;
+                for (let d = 0; d < days; d++) {
+                    content += `<div class="gantt-day"></div>`;
+                }
+                content += '</div></div>';
+            });
+            content += '</div>';
+            gantt.innerHTML = content;
+            
+            // Add reservations
+            reservations.forEach(res => {
+                const row = document.querySelector(`.gantt-row[data-room='${res.room}'] .gantt-days`);
+                if (!row) return;
+                const startDateIndex = (new Date(res.start) - new Date("2025-02-01")) / (1000 * 60 * 60 * 24);
+                const endDateIndex = (new Date(res.end) - new Date("2025-02-01")) / (1000 * 60 * 60 * 24);
+                const reservationBar = document.createElement("div");
+                reservationBar.classList.add("reservation");
+                reservationBar.style.left = (startDateIndex * 120) + "px";
+                reservationBar.style.width = ((endDateIndex - startDateIndex + 1) * 120) + "px";
+                reservationBar.textContent = res.customer;
+                row.appendChild(reservationBar);
+            });
+        }
+        generateGantt();
+    </script>
+</body>
+</html>
+
