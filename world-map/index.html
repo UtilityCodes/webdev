@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Sales Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        #map {
+            height: 80vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>World Sales Dashboard</h2>
+    <div id="map"></div>
+
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([20, 0], 2);
+        
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Sales data for some countries
+        var salesData = {
+            "USA": { lat: 37.0902, lng: -95.7129, sales: "$50,000" },
+            "UK": { lat: 55.3781, lng: -3.4360, sales: "$20,000" },
+            "Germany": { lat: 51.1657, lng: 10.4515, sales: "$30,000" },
+            "India": { lat: 20.5937, lng: 78.9629, sales: "$25,000" },
+            "Australia": { lat: -25.2744, lng: 133.7751, sales: "$15,000" }
+        };
+
+        // Add markers with hover tooltips
+        for (var country in salesData) {
+            var data = salesData[country];
+            var marker = L.marker([data.lat, data.lng]).addTo(map);
+            marker.bindTooltip(country + " Sales: " + data.sales, { permanent: false, direction: "top" });
+        }
+    </script>
+</body>
+</html>
