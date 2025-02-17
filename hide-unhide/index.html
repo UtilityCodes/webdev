@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visa Card</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .card-container {
+            background: linear-gradient(135deg, #007bff, #6610f2);
+            color: white;
+            width: 350px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .card-number, .cvv {
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: inline;
+        }
+        button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <h2>Visa Card</h2>
+        <p>Card Holder: John Doe</p>
+        <p class="card-number"><span id="card-number">**** **** **** ****</span></p>
+        <p>Expiry: 12/26</p>
+        <p>CVV: <span id="cvv">***</span></p>
+        <button onclick="toggleVisibility()">Unhide</button>
+    </div>
+
+    <script>
+        function toggleVisibility() {
+            const cardNumber = document.getElementById('card-number');
+            const cvv = document.getElementById('cvv');
+            const button = document.querySelector('button');
+            
+            if (cardNumber.textContent === '**** **** **** ****') {
+                cardNumber.textContent = '1234 5678 9012 3456';
+                cvv.textContent = '789';
+                button.textContent = 'Hide';
+            } else {
+                cardNumber.textContent = '**** **** **** ****';
+                cvv.textContent = '***';
+                button.textContent = 'Unhide';
+            }
+        }
+    </script>
+</body>
+</html>
+
